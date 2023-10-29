@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: Gerador de Senha API
+  version: 1.0
+  description: API para gerar senhas e autenticar usuários.
+paths:
+  /:
+    get:
+      summary: Página inicial
+      description: Página inicial da API.
+      responses:
+        '200':
+          description: Sucesso.
+          content:
+            text/html:
+              example: |
+                <h1>Bem-vindo ao Gerador de Senha!</h1>
+                <p>Clique no link abaixo para gerar uma nova senha:</p>
+                <a href="/gerar_senha?comprimento=8&minusculas=true&maiusculas=true&numeros=true&especiais=false&api_key={api_key}">Gerar Senha</a>
+  /get-api-key:
+    get:
+      summary: Obter chave de API
+      description: Obter uma chave de API usando nome de usuário e senha.
+      parameters:
+        - name: username
+          in: query
+          description: Nome de usuário.
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Senha.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Chave de API obtida com sucesso.
+          content:
+            application/json:
+              example: {api_key: 'sua_api_key'}
+        '401':
+          description: Falha na autenticação.
+  /register:
+    post:
+      summary: Registrar usuário
+      description: Registrar um novo usuário com nome de usuário e senha.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Nome de usuário.
+                password:
+                  type: string
+                  description: Senha.
+      responses:
+        '200':
+          description: Usuário registrado com sucesso.
+        '400':
+          description: Parâmetros ausentes ou inválidos.
+  /gerar_senha:
+    get:
+      summary: Gerar senha
+      description: Gerar uma senha aleatória com base nos parâmetros fornecidos.
+      parameters:
+        - name: comprimento
+          in: query
+          description: Comprimento da senha.
+          required: false
+          schema:
+            type: integer
+            example: 8
+        - name: minusculas
+          in: query
+          description: Incluir letras minúsculas na senha.
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: maiusculas
+          in: query
+          description: Incluir letras maiúsculas na senha.
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: numeros
+          in: query
+          description: Incluir números na senha.
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: especiais
+          in: query
+          description: Incluir caracteres especiais na senha.
+          required: false
+          schema:
+            type: boolean
+            example: false
+        - name: api_key
+          in: query
+          description: Chave de API para autenticação.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Senha gerada com sucesso.
+          content:
+            application/json:
+              example: {senha: 'senha_aleatória', parametros: {comprimento: 8, minusculas: true, maiusculas: true, numeros: true, especiais: false}}
+        '500':
+          description: Erro ao gerar a senha.
